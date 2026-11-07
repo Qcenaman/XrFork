@@ -93,6 +93,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
+import com.google.ai.edge.gallery.services.tts.TtsModelIdentifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -358,11 +359,12 @@ constructor(
     get() = AsrModelRegistry.resolveEngineType(selectedAsrModelID.value)
 
   /**
-   * The [TtsModelIdentifier] of the global TTS engine. XR Language Teacher only uses that engine
-   * and never falls back to another one.
+   * The [TtsModelIdentifier] of the TTS engine. This build always uses the phone's system voice,
+   * which speaks Tagalog (Filipino) when its voice data is installed; the downloadable voice models
+   * don't.
    */
-  val selectedTtsModelID: StateFlow<String>
-    get() = ttsSettingsRepository.selectedTtsModelID
+  val selectedTtsModelID: StateFlow<String> =
+    MutableStateFlow(TtsModelIdentifier.ANDROID_NATIVE).asStateFlow()
 
   /** Whether this ViewModel started glasses connection monitoring. */
   internal val isMonitoringGlassesConnection: Boolean = true
